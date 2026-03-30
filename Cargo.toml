@@ -1,10 +1,10 @@
 [package]
-name = "invoke-aws-lambda"
-version = "0.1.0"
-edition = "2021"
+name = "invoke-aws-lambda-rs"
+version = "0.0.1"
+edition = "2024"
 
 [[bin]]
-name = "invoke-aws-lambda"
+name = "invoke-aws-lambda-rs"
 path = "src/main.rs"
 
 [dependencies]

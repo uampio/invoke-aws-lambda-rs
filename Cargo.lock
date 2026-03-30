@@ -1045,8 +1045,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "invoke-aws-lambda"
-version = "0.1.0"
+name = "invoke-aws-lambda-rs"
+version = "0.0.1"
 dependencies = [
  "aws-config",
  "aws-credential-types",
