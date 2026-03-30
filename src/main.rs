@@ -96,6 +96,11 @@ async fn main() {
 
     let resp = req.send().await.unwrap_or_else(|e| {
         eprintln!("Error invoking Lambda: {}", e);
+        let mut source: Option<&dyn std::error::Error> = std::error::Error::source(&e);
+        while let Some(err) = source {
+            eprintln!("  Caused by: {}", err);
+            source = err.source();
+        }
         process::exit(1);
     });
 
@@ -129,7 +134,13 @@ async fn main() {
     println!("{}", response_str);
 
     if function_error.is_some() && !succeed_on_failure {
-        eprintln!("Lambda returned a function error");
+        eprintln!(
+            "Lambda returned a function error: {}",
+            function_error.as_deref().unwrap_or("unknown")
+        );
+        if !payload_str.is_empty() {
+            eprintln!("Error details: {}", payload_str);
+        }
         process::exit(1);
     }
 }
