@@ -12,7 +12,10 @@ use std::{env, process};
 
 fn get_input(name: &str) -> Option<String> {
     let key = format!("INPUT_{}", name.to_uppercase().replace('-', "_"));
-    env::var(&key).ok().filter(|v| !v.is_empty())
+    env::var(&key)
+        .ok()
+        .map(|v| v.trim().to_string())
+        .filter(|v| !v.is_empty())
 }
 
 fn require_input(name: &str) -> String {
@@ -40,7 +43,7 @@ async fn main() {
     let access_key = require_input("AWS_ACCESS_KEY_ID");
     let secret_key = require_input("AWS_SECRET_ACCESS_KEY");
     let session_token = get_input("AWS_SESSION_TOKEN");
-    let region = get_input("REGION").unwrap_or_else(|| "us-east-1".to_string());
+    let region = get_input("REGION").unwrap_or_else(|| "eu-central-1".to_string());
     let function_name = require_input("FunctionName");
     let invocation_type = get_input("InvocationType").unwrap_or_else(|| "RequestResponse".to_string());
     let log_type = get_input("LogType").unwrap_or_else(|| "None".to_string());
