@@ -55,8 +55,8 @@ runs:
       run: |
         BIN_PATH="${{ github.action_path }}/invoke-aws-lambda"
         if [ ! -f "$BIN_PATH" ]; then
-          curl -sSL \
-            "https://github.com/${{ github.repository_owner }}/invoke-aws-lambda-rs/releases/latest/download/invoke-aws-lambda-linux-x86_64" \
+          curl -sSLf \
+            "https://github.com/uampio/invoke-aws-lambda-rs/releases/latest/download/invoke-aws-lambda-linux-x86_64" \
             -o "$BIN_PATH"
           chmod +x "$BIN_PATH"
         fi
