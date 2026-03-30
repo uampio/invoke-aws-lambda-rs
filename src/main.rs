@@ -8,7 +8,7 @@ use aws_sdk_lambda::{
 };
 use base64::{engine::general_purpose::STANDARD, Engine};
 use serde_json::{json, Value};
-use std::{env, process};
+use std::{env, io::Write, process};
 
 fn get_input(name: &str) -> Option<String> {
     let key = format!("INPUT_{}", name.to_uppercase().replace('-', "_"));
@@ -135,6 +135,8 @@ async fn main() {
     let response_str = response.to_string();
     set_output("response", &response_str);
     println!("{}", response_str);
+    // Flush stdout so the JSON response appears before any stderr error messages
+    let _ = std::io::stdout().flush();
 
     if function_error.is_some() && !succeed_on_failure {
         eprintln!(
