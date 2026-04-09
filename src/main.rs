@@ -6,9 +6,12 @@ use aws_sdk_lambda::{
     types::{InvocationType, LogType},
     Client,
 };
+use aws_smithy_types::timeout::TimeoutConfig;
 use base64::{engine::general_purpose::STANDARD, Engine};
 use serde_json::{json, Value};
-use std::{env, io::Write, process};
+use std::{env, io::Write, process, time::Duration};
+
+const DEFAULT_TIMEOUT_SECS: u64 = 240;
 
 fn get_input(name: &str) -> Option<String> {
     let key = format!("INPUT_{}", name.to_uppercase().replace('-', "_"));
@@ -53,6 +56,13 @@ async fn main() {
     let succeed_on_failure = get_input("SUCCEED_ON_FUNCTION_FAILURE")
         .map(|v| v.eq_ignore_ascii_case("true"))
         .unwrap_or(false);
+    let timeout_secs: u64 = get_input("TIMEOUT")
+        .and_then(|v| {
+            v.parse().map_err(|_| {
+                eprintln!("Warning: invalid TIMEOUT value '{}', using default {}s", v, DEFAULT_TIMEOUT_SECS);
+            }).ok()
+        })
+        .unwrap_or(DEFAULT_TIMEOUT_SECS);
 
     let creds = Credentials::new(
         &access_key,
@@ -62,10 +72,15 @@ async fn main() {
         "github-action",
     );
 
+    let timeout_config = TimeoutConfig::builder()
+        .read_timeout(Duration::from_secs(timeout_secs))
+        .build();
+
     let config = Builder::new()
         .behavior_version(BehaviorVersion::latest())
         .region(Region::new(region))
         .credentials_provider(creds)
+        .timeout_config(timeout_config)
         .build();
 
     let client = Client::from_conf(config);

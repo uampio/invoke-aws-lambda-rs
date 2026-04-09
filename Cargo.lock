@@ -1051,6 +1051,7 @@ dependencies = [
  "aws-config",
  "aws-credential-types",
  "aws-sdk-lambda",
+ "aws-smithy-types",
  "aws-types",
  "base64",
  "serde_json",

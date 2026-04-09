@@ -42,6 +42,10 @@ inputs:
     description: "Set to true to succeed even when Lambda returns a function error"
     required: false
     default: "false"
+  TIMEOUT:
+    description: "HTTP read timeout in seconds for the Lambda invocation"
+    required: false
+    default: "240"
 
 outputs:
   response:
@@ -76,4 +80,5 @@ runs:
         INPUT_PAYLOAD: ${{ inputs.Payload }}
         INPUT_QUALIFIER: ${{ inputs.Qualifier }}
         INPUT_SUCCEED_ON_FUNCTION_FAILURE: ${{ inputs.SUCCEED_ON_FUNCTION_FAILURE }}
+        INPUT_TIMEOUT: ${{ inputs.TIMEOUT }}
       run: "${{ github.action_path }}/invoke-aws-lambda-rs"
